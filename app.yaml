@@ -1,0 +1,25 @@
+application: neatflix
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /images/favicon\.ico
+  static_files: /images/favicon.ico
+  upload: /images/favicon\.ico
+
+- url: /images
+  static_dir: images
+
+- url: /javascript
+  static_dir: javascript
+
+- url: /css
+  static_dir: css
+
+- url: /templates
+  static_dir: html
+
+- url: /.*
+  script: main.py
+  

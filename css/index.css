@@ -1,0 +1,78 @@
+/* layout */
+#wrapper {
+   width: 640px;
+   margin-top: 30px;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+#input_box, #result_box, #detail_result_box, #logo_box {
+   margin-top: 30px;
+   width: 620px;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+#picture_box {
+   width: 130px;
+   float: left;
+}
+
+#info_box {
+   width: 490px;
+   float: right;
+   line-height: 130%;
+}
+
+#logo {
+   float: left;
+}
+
+#logo_sub {
+   font-size: 16px;
+   margin-left: 20px;
+}
+
+#about {
+   float: right;
+   padding-top: 10px;
+}
+
+#search_box {
+   width: 520px;
+   margin-top: 30px;
+}
+
+form {
+   display: inline;
+}
+
+/* results style */
+#title { font-size: 140%; font-weight: bold; }
+#release, #runtime, #rating, #episodes, #format { margin-right: 20px; }
+
+/* style */
+body {
+   font: 16px 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif; 
+}
+
+a:link, a:visited, a:hover {
+   color: black;
+   cursor: hand;
+   text-decoration: none;
+}
+
+a.about_link:link, a.about_link:visited, a.about_link:hover {
+   color: #777;
+   cursor: hand;
+   text-decoration: none;
+}
+
+#logo {
+   font-size: 60px;
+   font-family: monospace;
+}
+
+.search_button { width: 95px; }
+</style>
+
