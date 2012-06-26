@@ -11,6 +11,8 @@ from xml.etree import ElementTree as ET
 
 import logging
 
+SECRET = ''
+
 def OAuthEscape( s ):
    return urllib.quote( s.encode('utf-8'), '' )
 
@@ -32,7 +34,7 @@ def GenerateSig( url, key, nonce, time_stamp, expand_parms, term ):
 
    sig = sig + OAuthEscape(parameters)
 
-   secret = '<SECRET_KEY>' + '&'
+   secret =  SECRET + '&'
    hashed = hmac.new(secret, sig, sha1)
 
    safe_sig = binascii.b2a_base64(hashed.digest())[:-1]
