@@ -7,6 +7,14 @@ handlers:
 - url: /images/favicon\.ico
   static_files: /images/favicon.ico
   upload: /images/favicon\.ico
+  
+- url: /templates/data\.txt
+  static_files: /templates/data\.txt
+  upload: /templates/data\.txt
+
+- url: /\.gitignore
+  static_files: /\.gitignore
+  upload: /\.gitignore
 
 - url: /images
   static_dir: images
@@ -22,4 +30,3 @@ handlers:
 
 - url: /.*
   script: main.py
-  
