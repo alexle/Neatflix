@@ -41,7 +41,9 @@ function LoadAbout()
              'javascript, but later moved to the server (python) due to the realization that the oAuth secret key was ' +
              'shared in viewable source. Not a good practice.<br><br>' +
              'This demo was built by <a class="about_link" href="http://www.alexanderle.com">Alex Le</a> to learn ' +
-             'more about the <a class="about_link" href="http://developer.netflix.com/page">Netflix API</a>.'
+             'more about the <a class="about_link" href="http://developer.netflix.com/page">Netflix API</a>.' +
+             '<p><a href="https://twitter.com/share" class="twitter-share-button" data-via="alextrle">Tweet</a>' +
+             '<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></p>'
 
    $("#picture_box").append(pic)
    $("#info_box").append(msg);
