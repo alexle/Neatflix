@@ -28,27 +28,6 @@ function GetNetflixAuto()
    );
 }
 
-function LoadAbout()
-{
-   $("#result_box").empty();
-   $("#picture_box").html('');
-   $("#info_box").html('');
-
-   var pic = '<a class="about_link" href="http://www.netflix.com"><img src="http://android.appstorm.net/wp-content/uploads/2011/05/icon.gif" width="110px"/></a>'
-
-   var msg = 'Neatflix is a way to quickly search the <a class="about_link" href="http://www.netflix.com">Netflix</a> ' +
-             'database to find more information about movies and tv shows. The API calls were originally written in ' +
-             'javascript, but later moved to the server (python) due to the realization that the oAuth secret key was ' +
-             'shared in viewable source. Not a good practice.<br><br>' +
-             'This demo was built by <a class="about_link" href="http://www.alexanderle.com">Alex Le</a> to learn ' +
-             'more about the <a class="about_link" href="http://developer.netflix.com/page">Netflix API</a>.' +
-             '<p><a href="https://twitter.com/share" class="twitter-share-button" data-via="alextrle">Tweet</a>' +
-             '<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></p>'
-
-   $("#picture_box").append(pic)
-   $("#info_box").append(msg);
-}
-
 $(document).ready(function () {
    $("#search_box").keyup(function (event) {
       if (event.keyCode == 13) {
