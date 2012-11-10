@@ -21,41 +21,41 @@
 
    <body>
    <div id="wrapper">
-      <div id="logo_box">
+      <div id="nav_box">
          <div id="logo">
             <a href="/">Neatflix</a><span id="logo_sub">a netflix api demo</span>
          </div>
          <div id="about">
             <a class="about_link" href="/about">about</a><br>
             <a class="about_link" href="mailto:alex.csm@gmail.com">contact</a>
-            </form>
-         </form>
          </div>
       </div>
 
       <div id="input_box">
-         <input id="search_box" />
-         <input type="button" class="search_button" value="Movie Search" onclick="GetNetflixAuto(); return false;" />
+         <form method="post">
+         <input type="text" id="search_box" name="auto_search_input">
+         <input type="submit" id="search_button" value="Search">
+         </form>
       </div>
 
-      <div id="result_box"></div>
-
-      <div id="detail_result_box">
-         <div id="picture_box">{{ movie_art }}</div>
+      {% for entry in Entries %}
+      <div id="entry_box">
+         <div id="picture_box">{{ entry.movie_art }}</div>
          <div id="info_box">
-            <span id="title">{{ title }}</span><br><br>
+            <span id="title">{{ entry.title }}</span><br><br>
 
-            <span id="release">{{ release_year }}</span>
-            <span id="runtime">{{ runtime }}</span>
-            <span id="rating">{{ avg_rating }}</span>
-            <span id="format">{{ formats }}</span>
-            <span id="episodes">{{ episodes }}</span>
+            <span id="release">{{ entry.release_year }}</span>
+            <span id="runtime">{{ entry.runtime }}</span>
+            <span id="rating">{{ entry.avg_rating }}</span>
+            <span id="format">{{ entry.formats }}</span>
+            <span id="episodes">{{ entry.episodes }}</span>
 
-            <p id="synopsis">{{ synopsis }}</p>
+            <p id="synopsis">{{ entry.synopsis }}</p>
 
-            <p id="genre">{{ genre }}</p>
+            <p id="genre">{{ entry.genre }}</p>
          </div>
       </div>
+      {% endfor %}
    </div>
 
    </body>

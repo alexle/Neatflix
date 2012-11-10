@@ -2,6 +2,7 @@ import os, sys
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from google.appengine.ext.webapp import template
+from google.appengine.api import urlfetch
 
 from hashlib import sha1
 import hmac, binascii
@@ -43,6 +44,17 @@ def GenerateSig( url, key, nonce, time_stamp, expand_parms, term ):
 
    return safe_sig
 
+class Entry:
+   title = ''
+   movie_art = ''
+   release_year = ''
+   runtime = ''
+   avg_rating = '' 
+   episodes = '' 
+   formats = '' 
+   synopsis = ''
+   genre = ''
+
 class MainHandler(webapp.RequestHandler):
    def get(self):
 
@@ -53,86 +65,117 @@ class MainHandler(webapp.RequestHandler):
 
    def post(self):
 
+      auto_url = "http://api-public.netflix.com/catalog/titles/autocomplete"
       url = 'http://api-public.netflix.com/catalog/titles'
-      key = 'adqe4ngafwj8ybwvnfgbnuta'
+
+      key = "adqe4ngafwj8ybwvnfgbnuta"
+      expand_parms = 'synopsis,cast,formats,@episodes,@seasons'
       nonce = RandomString()
       time_stamp = str( int(time.time()) )
-      expand_parms = 'synopsis,cast,formats,@episodes,@seasons'
 
-      term = self.request.get('user')
+      # Get search string
+      search_string = self.request.get('auto_search_input')
 
-      sign = GenerateSig( url, key, nonce, time_stamp, expand_parms, OAuthEscape(term) )
+      auto_parameters = [
+         ('term', search_string),
+         ('oauth_consumer_key', key)]
 
-      parameters = [
-         ('expand', expand_parms),
-         ('max_results', '1'),
-         ('oauth_consumer_key', key),
-         ('oauth_nonce', nonce),
-         ('oauth_signature', sign),
-         ('oauth_signature_method', 'HMAC-SHA1'),
-         ('oauth_timestamp', time_stamp),
-         ('oauth_version', '1.0'),
-         ('term', term)]
+      full_auto_url = auto_url + '?' + urllib.urlencode(auto_parameters)
 
-      full_url = url + '?' + urllib.urlencode(parameters)
+      # Read autocomplete url and convert to XML
+      auto_data = urlfetch.fetch(full_auto_url, deadline=10).content
+      auto_xml = ET.fromstring(auto_data)
 
-      data = urllib2.urlopen(full_url).read()
+      # Logging DEBUG
+      logging.info(auto_data)
 
-      xml = ET.fromstring(data)
+      # auto_names holds the titles returned by autocomplete search
+      auto_names = []
 
-      # Parse xml
-      movie_art = '<img src=\"' + xml.find('.//box_art').attrib.get('large') + '\">'
+      # Entries is a list of entry objects
+      Entries = []
 
-      title = xml.find('.//title').attrib.get('regular')
+      # Grab all titles from autocomplete search
+      for i in auto_xml.findall('.//title'):
+         n = i.attrib.get('short')
+         auto_names.append(n)
 
-      release_year = xml.find('.//release_year').text
+      MAX_RESULTS = 7 if len(auto_names) > 7 else len(auto_names)
+   
+      # Perform catalog search on autocomplete titles
+      for i in range( MAX_RESULTS ):
+         entry = Entry()
 
-      runtime = xml.find('.//runtime')
-      if runtime is None:
-         runtime = '--'
-      else:
-         runtime = int(runtime.text) / 60
-      runtime = str(runtime) + ' mins'
+         term = auto_names[i]
 
-      avg_rating = xml.find('.//average_rating').text
-      
-      episodes = ''
-      for i in xml.findall('.//link/catalog_titles/number_of_results'):
-         if i is not None:
-            episodes = i.text + ' episodes'
+         sign = GenerateSig( url, key, nonce, time_stamp, expand_parms, OAuthEscape(term) )
 
-      formats = ''
-      for i in xml.findall('.//availability/category'):
-         formats = formats + i.attrib.get('label') + ', '
-      formats = formats[0:-2].title()
+         parameters = [
+            ('expand', expand_parms),
+            ('max_results', '1'),
+            ('oauth_consumer_key', key),
+            ('oauth_nonce', nonce),
+            ('oauth_signature', sign),
+            ('oauth_signature_method', 'HMAC-SHA1'),
+            ('oauth_timestamp', time_stamp),
+            ('oauth_version', '1.0'),
+            ('term', term)]
 
-      genre = ''
-      for i in xml.findall('.//category'):
-         if (i.attrib.get('scheme') == 'http://api.netflix.com/categories/genres'):
-            genre = genre + i.attrib.get('label') + ', '
-      genre = '<b>Genre:</b> ' + genre[0:-2]
+         full_url = url + '?' + urllib.urlencode(parameters)
 
-      synopsis = xml.find('.//synopsis').text
-      
+         # Read catalog url and convert to XML
+         data = urlfetch.fetch(full_url, deadline=10).content
+         xml = ET.fromstring(data)
+
+         # Logging DEBUG
+         logging.info(data)
+
+         # Pull out title attributes of entry
+         entry.title = xml.find('.//title').attrib.get('regular')
+
+         entry.movie_art = '<img src=\"' + xml.find('.//box_art').attrib.get('large') + '\">'
+
+         entry.release_year = xml.find('.//release_year').text
+
+         entry.runtime =  xml.find('.//runtime')
+         if entry.runtime is None:
+            entry.runtime = '--'
+         else:
+            entry.runtime = int(entry.runtime.text) / 60
+         entry.runtime = str(entry.runtime) + ' mins'
+
+         entry.avg_rating = xml.find('.//average_rating').text
+         
+         valid_episodes = xml.find('.//catalog_titles/number_of_results')
+         if valid_episodes is not None:
+            entry.episodes = valid_episodes.text + ' episodes'
+
+         for i in xml.findall('.//availability/category'):
+            entry.formats = entry.formats + i.attrib.get('label') + ', '
+         entry.formats = entry.formats[0:-2].title()
+
+         count = 0
+         entry.genre = '<b>Genre:</b> '
+         for i in xml.findall('.//category'):
+            if (i.attrib.get('scheme') == 'http://api-public.netflix.com/categories/genres'):
+               entry.genre += i.attrib.get('label')
+               count += 1
+               if count == 2:
+                  break
+               entry.genre += ', '
+
+         entry.synopsis = xml.find('.//synopsis').text
+
+         Entries.append(entry)
+
       # Set up template values
       template_values = {
-         'movie_art': movie_art,
-         'title': title,
-         'release_year': release_year,
-         'runtime': runtime,
-         'avg_rating': avg_rating,
-         'episodes': episodes,
-         'formats': formats,
-         'synopsis': synopsis,
-         'genre': genre,
-         'user_name': sign,
+         'Entries': Entries
       }
-      
+
       path = os.path.join( os.path.dirname(__file__), 'index.html' )
 
       self.response.out.write( template.render( path, template_values ) )
-
-      #//http://odata.netflix.com/Catalog/Titles?$filter=Name%20eq%20'Storage%20wars'
 
 class AboutPage(webapp.RequestHandler):
    def get(self):

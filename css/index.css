@@ -1,27 +1,9 @@
 /* layout */
 #wrapper {
-   width: 640px;
+   width: 700px;
    margin-top: 30px;
    margin-left: auto;
    margin-right: auto;
-}
-
-#input_box, #result_box, #detail_result_box, #logo_box {
-   margin-top: 30px;
-   width: 620px;
-   margin-left: auto;
-   margin-right: auto;
-}
-
-#picture_box {
-   width: 130px;
-   float: left;
-}
-
-#info_box {
-   width: 490px;
-   float: right;
-   line-height: 130%;
 }
 
 #logo {
@@ -35,23 +17,45 @@
 
 #about {
    float: right;
-   padding-top: 10px;
+   padding-top: 11px;
+}
+
+#input_box {
+   clear: both;
+   width: 650px;
 }
 
 #search_box {
-   width: 520px;
+   width: 420px;
    margin-top: 30px;
 }
 
-form {
-   display: inline;
+#search_button {
+   width: 100px;
+}
+
+#entry_box {
+   clear: both;
+}
+
+#picture_box {
+   width: 130px;
+   float: left;
+}
+
+#info_box {
+   width: 560px;
+   float: right;
+   line-height: 130%;
 }
 
 /* results style */
-#title { font-size: 140%; font-weight: bold; }
 #release, #runtime, #rating, #episodes, #format { margin-right: 20px; }
 
 /* style */
+#title { font-size: 140%; font-weight: bold; }
+#about { font-size: 120%; }
+
 body {
    font: 16px 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif; 
 }
@@ -72,7 +76,4 @@ a.about_link:link, a.about_link:visited, a.about_link:hover {
    font-size: 60px;
    font-family: monospace;
 }
-
-.search_button { width: 95px; }
-</style>
 
