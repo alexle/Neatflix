@@ -8,6 +8,8 @@
 
 #logo {
    float: left;
+   font-size: 60px;
+   font-family: monospace;
 }
 
 #logo_sub {
@@ -70,10 +72,5 @@ a.about_link:link, a.about_link:visited, a.about_link:hover {
    color: #777;
    cursor: hand;
    text-decoration: none;
-}
-
-#logo {
-   font-size: 60px;
-   font-family: monospace;
 }
 

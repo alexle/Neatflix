@@ -58,13 +58,6 @@ class Entry:
 class MainHandler(webapp.RequestHandler):
    def get(self):
 
-      template_values = { }
-
-      path = os.path.join( os.path.dirname(__file__), 'index.html' )
-      self.response.out.write( template.render( path, template_values ) )
-
-   def post(self):
-
       auto_url = "http://api-public.netflix.com/catalog/titles/autocomplete"
       url = 'http://api-public.netflix.com/catalog/titles'
 
@@ -74,7 +67,7 @@ class MainHandler(webapp.RequestHandler):
       time_stamp = str( int(time.time()) )
 
       # Get search string
-      search_string = self.request.get('auto_search_input')
+      search_string = self.request.get('search_input')
 
       auto_parameters = [
          ('term', search_string),
@@ -174,7 +167,6 @@ class MainHandler(webapp.RequestHandler):
       }
 
       path = os.path.join( os.path.dirname(__file__), 'index.html' )
-
       self.response.out.write( template.render( path, template_values ) )
 
 class AboutPage(webapp.RequestHandler):
