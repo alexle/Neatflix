@@ -11,24 +11,20 @@
          <div id="logo">
             <a href="/">Neatflix</a><span id="logo_sub">a netflix api demo</span>
          </div>
-         <div id="about">
-            <a class="about_link" href="/about">about</a><br>
-            <a class="about_link" href="mailto:alex.csm@gmail.com">contact</a>
-            </form>
-         </form>
-         </div>
+
+         <form id="search_form" method="get">
+         <input type="text" id="search_box" name="search_input" value="Search for a film">
+         <button id="search_button" type="submit"><img id="search_icon" src='/images/icon_search.png'/></button>
       </div>
 
-      <div id="input_box">
-      <br><br><br>
-      <br><br><br>
-      </div>
+      <div class="clear"></div>
+      <br><br>
 
-      <div id="entry_box">
-         <div id="picture_box">
+      <div class="entry_box">
+         <div class="picture_box">
             <a class="about_link" href="http://www.netflix.com"><img src="/images/netflix.jpg" width="120px"/></a>
           </div>
-         <div id="info_box">
+         <div class="info_box">
             Neatflix is a way to quickly search the <a class="about_link" href="http://www.netflix.com">Netflix</a>
             database to find more information about movies and tv shows. The API calls were originally written in
             javascript, but later moved to the server (python) due to the realization that the oAuth secret key was
@@ -41,6 +37,15 @@
                <g:plusone size="medium"></g:plusone>
             </p>
          </div>
+      </div>
+
+      <div class="clear"></div>
+
+      <div id="about">
+         <a class="about_link" href="/about">about</a><br>
+         <a class="about_link" href="mailto:alex.csm@gmail.com">contact</a>
+         </form>
+      </form>
       </div>
    </div>
 

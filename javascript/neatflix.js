@@ -1,12 +1,11 @@
-$(function() {
-   $("#search_box").focus();
-});
-
-$(document).ready(function () {
-   $("#search_box").keyup(function (event) {
-      if (event.keyCode == 13) {
-         GetNetflixAuto();
-      }
-   });
-});
+function ClearField(field) {
+   if (field.defaultValue == field.value)
+   {
+      field.value = '';
+   }
+   else if (field.value == '')
+   {
+      field.value = field.defaultValue;
+   }
+}
 

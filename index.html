@@ -25,37 +25,60 @@
          <div id="logo">
             <a href="/">Neatflix</a><span id="logo_sub">a netflix api demo</span>
          </div>
-         <div id="about">
-            <a class="about_link" href="/about">about</a><br>
-            <a class="about_link" href="mailto:alex.csm@gmail.com">contact</a>
-         </div>
-      </div>
 
-      <div id="input_box">
-         <form method="get">
-         <input type="text" id="search_box" name="search_input">
-         <input type="submit" id="search_button" value="Movie Search">
+         <form id="search_form" method="get">
+         <input type="text" id="search_box" name="search_input" value="Search for a film" onfocus="this.value=''">
+         <button id="search_button" type="submit" onclick="$('#result_box').html(''); $('#spinner').show();">
+            <img id="search_icon" src='/images/icon_search.png'/>
+         </button>
          </form>
       </div>
 
-      {% for entry in Entries %}
-      <div id="entry_box">
-         <div id="picture_box">{{ entry.movie_art }}</div>
-         <div id="info_box">
-            <span id="title">{{ entry.title }}</span><br><br>
+      <div class="clear"></div>
+      <br><br>
 
-            <span id="release">{{ entry.release_year }}</span>
-            <span id="runtime">{{ entry.runtime }}</span>
-            <span id="rating">{{ entry.avg_rating }}</span>
-            <span id="format">{{ entry.formats }}</span>
-            <span id="episodes">{{ entry.episodes }}</span>
+      <div id="spinner"><img src="/images/ajax-loader.gif"></div>
+      
+      <div id="result_box">
+         {% if Entries|length %}
+            Showing {{ Entries|length }} result(s) for "{{ search_string }}":
+         {% endif %}
 
-            <p id="synopsis">{{ entry.synopsis }}</p>
+         {% for entry in Entries %}
+         <div class="entry_box">
+            <div class="picture_box">{{ entry.movie_art }}</div>
+            <div class="info_box">
+               <span class="title">{{ entry.title }}</span><br><br>
 
-            <p id="genre">{{ entry.genre }}</p>
+               <span class="release">{{ entry.release_year }}</span>
+               <span class="runtime">{{ entry.runtime }}</span>
+               <span class="rating">{{ entry.avg_rating }}</span>
+               <span class="format">{{ entry.formats }}</span>
+               <span class="episodes">{{ entry.episodes }}</span>
+
+               <p class="synopsis">{{ entry.synopsis }}</p>
+
+               <p class="genre">{{ entry.genre }}</p>
+            </div>
          </div>
+         <div class="clear"><hr></div>
+         {% endfor %}
+         
+      <!-- test code
+         {% for entry in Entries %}
+         <div class="entry2_box">
+            <div class="movie_art">{{ entry.movie_art }}</div>
+            <div class="caption">{{ entry.title}} ({{entry.release_year}})</div>
+         </div>
+         {% endfor %}
+      -->
       </div>
-      {% endfor %}
+
+      <div id="about">
+         <a class="about_link" href="/about">about</a><br>
+         <a class="about_link" href="mailto:alex.csm@gmail.com">contact</a>
+      </div>
+
    </div>
 
    </body>
