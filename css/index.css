@@ -1,4 +1,7 @@
-/* layout */
+body {
+   font: 14px 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif; 
+}
+
 #wrapper {
    width: 660px;
    margin-top: 30px;
@@ -26,21 +29,19 @@
    height: 22px;
    width: 180px;
    color: #777;
+   padding: 4px;
+   padding-right: 25px;
+   outline: none;
    float: left;
 }
 
 #search_button {
+   background: transparent url('/images/icon_search2.png') no-repeat center;
    height: 22px;
-   width: 40px;
-   float: right;
-}
-
-#search_icon {
-   width: 16px;
-   height: 16px;
-}
-
-#about {
+   width: 22px;
+   margin-left: -23px;
+   border: none;
+   cursor: pointer;
 }
 
 .entry_box {
@@ -67,15 +68,9 @@
    display: none;
 }
 
-/* results style */
 .release, .runtime, .rating, .episodes, .format { margin-right: 20px; }
 
-/* style */
-.title { font-size: 140%; font-weight: bold; }
-
-body {
-   font: 14px 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif; 
-}
+.title { font-size: 130%; font-weight: bold; }
 
 a:link, a:visited, a:hover {
    color: black;

@@ -8,4 +8,3 @@ function ClearField(field) {
       field.value = field.defaultValue;
    }
 }
-
