@@ -8,6 +8,11 @@ from hashlib import sha1
 import hmac, binascii, urllib,logging, time, string, random
 from xml.etree import ElementTree as ET
 
+# Get secret and consumer key from data file
+FILE = open('templates/data.txt', 'r')
+NET_SECRET = FILE.readline().strip()
+CONSUMER_KEY = FILE.readline().strip()
+
 def OAuthEscape( s ):
    return urllib.quote( s.encode('utf-8'), '' )
 
@@ -29,11 +34,8 @@ def GenerateSig( url, key, nonce, time_stamp, expand_parms, term ):
 
    sig = sig + OAuthEscape(parameters)
 
-   # Get secret from data file
-   FILE = open('templates/data.txt', 'r')
-   net_secret = FILE.readline().strip()
 
-   secret =  net_secret + '&'
+   secret =  NET_SECRET + '&'
    hashed = hmac.new(secret, sig, sha1)
 
    safe_sig = binascii.b2a_base64(hashed.digest())[:-1]
@@ -53,11 +55,10 @@ class Entry:
 
 def GetAutocompleteSearchTitles( search_string ):
       auto_url = "http://api-public.netflix.com/catalog/titles/autocomplete"
-      key = "adqe4ngafwj8ybwvnfgbnuta"
 
       auto_parameters = [
          ('term', search_string),
-         ('oauth_consumer_key', key)]
+         ('oauth_consumer_key', CONSUMER_KEY)]
 
       full_auto_url = auto_url + '?' + urllib.urlencode(auto_parameters)
 
@@ -80,7 +81,6 @@ def GetAutocompleteSearchTitles( search_string ):
 
 def GetCatalogTitles( auto_names ):
    url = 'http://api-public.netflix.com/catalog/titles'
-   key = "adqe4ngafwj8ybwvnfgbnuta"
 
    expand_parms = 'synopsis,cast,formats,@episodes,@seasons'
    nonce = RandomString()
@@ -97,12 +97,12 @@ def GetCatalogTitles( auto_names ):
 
       term = auto_names[i]
 
-      sign = GenerateSig( url, key, nonce, time_stamp, expand_parms, OAuthEscape(term) )
+      sign = GenerateSig( url, CONSUMER_KEY, nonce, time_stamp, expand_parms, OAuthEscape(term) )
 
       parameters = [
          ('expand', expand_parms),
          ('max_results', '1'),
-         ('oauth_consumer_key', key),
+         ('oauth_consumer_key', CONSUMER_KEY),
          ('oauth_nonce', nonce),
          ('oauth_signature', sign),
          ('oauth_signature_method', 'HMAC-SHA1'),
@@ -172,8 +172,10 @@ class MainHandler(webapp.RequestHandler):
       # Get search string
       search_string = self.request.get('search_input')
 
+      # Gather autocomplete titles from Netflix API
       auto_names = GetAutocompleteSearchTitles( search_string )
 
+      # Gather individual info for each autocomplete title
       Entries = GetCatalogTitles( auto_names )
 
       # Set up template values
