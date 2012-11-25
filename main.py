@@ -19,13 +19,13 @@ def OAuthEscape( s ):
 def RandomString( size=6, chars=string.ascii_uppercase + string.digits ):
    return ''.join( random.choice(chars) for x in range(size) )
 
-def GenerateSig( url, key, nonce, time_stamp, expand_parms, term ):
+def GenerateSig( url, nonce, time_stamp, expand_parms, term ):
    sig = 'GET&' + OAuthEscape( url ) + '&'
 
    parameters = ''.join([
       'expand=' + OAuthEscape(expand_parms),
       '&max_results=1',
-      '&oauth_consumer_key=' + key,
+      '&oauth_consumer_key=' + CONSUMER_KEY,
       '&oauth_nonce=' + nonce,
       '&oauth_signature_method=HMAC-SHA1',
       '&oauth_timestamp=' + time_stamp,
@@ -33,7 +33,6 @@ def GenerateSig( url, key, nonce, time_stamp, expand_parms, term ):
       '&term=' + term ])
 
    sig = sig + OAuthEscape(parameters)
-
 
    secret =  NET_SECRET + '&'
    hashed = hmac.new(secret, sig, sha1)
@@ -66,9 +65,6 @@ def GetAutocompleteSearchTitles( search_string ):
       auto_data = urlfetch.fetch(full_auto_url, deadline=10).content
       auto_xml = ET.fromstring(auto_data)
 
-      # Logging DEBUG
-      logging.info(auto_data)
-
       # auto_names holds the titles returned by autocomplete search
       auto_names = []
 
@@ -97,7 +93,7 @@ def GetCatalogTitles( auto_names ):
 
       term = auto_names[i]
 
-      sign = GenerateSig( url, CONSUMER_KEY, nonce, time_stamp, expand_parms, OAuthEscape(term) )
+      sign = GenerateSig( url, nonce, time_stamp, expand_parms, OAuthEscape(term) )
 
       parameters = [
          ('expand', expand_parms),
@@ -124,7 +120,7 @@ def GetCatalogTitles( auto_names ):
       xml = ET.fromstring(data)
 
       # Logging DEBUG
-      logging.info(data)
+      # logging.info(data)
 
       # Pull out title attributes of entry
       entry.title = xml.find('.//title').attrib.get('regular')
