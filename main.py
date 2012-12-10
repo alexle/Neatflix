@@ -30,7 +30,7 @@ def GenerateSig( url, nonce, time_stamp, expand_parms, term ):
       '&oauth_signature_method=HMAC-SHA1',
       '&oauth_timestamp=' + time_stamp,
       '&oauth_version=1.0',
-      '&term=' + term ])
+      '&term=' + OAuthEscape(term) ])
 
    sig = sig + OAuthEscape(parameters)
 
@@ -93,7 +93,7 @@ def GetCatalogTitles( auto_names ):
 
       term = auto_names[i]
 
-      sign = GenerateSig( url, nonce, time_stamp, expand_parms, OAuthEscape(term) )
+      sign = GenerateSig( url, nonce, time_stamp, expand_parms, term )
 
       parameters = [
          ('expand', expand_parms),
