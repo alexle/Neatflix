@@ -1,7 +1,8 @@
 application: neatflix
 version: 1
-runtime: python
+runtime: python27
 api_version: 1
+threadsafe: true
 
 handlers:
 - url: /images/favicon\.ico
@@ -29,4 +30,8 @@ handlers:
   static_dir: html
 
 - url: /.*
-  script: main.py
+  script: main.app
+
+libraries:
+- name: jinja2
+  version: latest

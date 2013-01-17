@@ -1,12 +1,13 @@
-import os, sys
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp import util
-from google.appengine.ext.webapp import template
+import os, sys, oauth2
+import webapp2, jinja2
 from google.appengine.api import urlfetch
 
 from hashlib import sha1
 import hmac, binascii, urllib,logging, time, string, random
 from xml.etree import ElementTree as ET
+
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 # Get secret and consumer key from data file
 FILE = open('templates/data.txt', 'r')
@@ -162,7 +163,7 @@ def GetCatalogTitles( auto_names ):
 
    return Entries
 
-class MainHandler(webapp.RequestHandler):
+class MainHandler(webapp2.RequestHandler):
    def get(self):
 
       # Get search string
@@ -180,24 +181,18 @@ class MainHandler(webapp.RequestHandler):
          'search_string': search_string
       }
 
-      path = os.path.join( os.path.dirname(__file__), 'index.html' )
-      self.response.out.write( template.render( path, template_values ) )
+      template = jinja_environment.get_template('index.html')
+      self.response.out.write( template.render( template_values ) )
 
-class AboutPage(webapp.RequestHandler):
+class AboutPage(webapp2.RequestHandler):
    def get(self):
 
       template_values = { }
 
-      path = os.path.join( os.path.dirname(__file__), 'templates/about.html' )
-      self.response.out.write( template.render( path, template_values ) )
+      template = jinja_environment.get_template('templates/about.html')
+      self.response.out.write( template.render( template_values ) )
 
-def main():
-   application = webapp.WSGIApplication([
-                     ('/', MainHandler),
-                     ('/about', AboutPage),
-                 ], debug=True)
-
-   util.run_wsgi_app(application)
-
-if __name__ == '__main__':
-   main()
+app = webapp2.WSGIApplication([
+                  ('/', MainHandler),
+                  ('/about', AboutPage),
+               ], debug=True)
