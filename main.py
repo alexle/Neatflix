@@ -14,26 +14,21 @@ FILE = open('templates/data.txt', 'r')
 NET_SECRET = FILE.readline().strip()
 CONSUMER_KEY = FILE.readline().strip()
 
+AUTO_URL = "http://api-public.netflix.com/catalog/titles/autocomplete"
+TITLE_URL = 'http://api-public.netflix.com/catalog/titles'
+
 def OAuthEscape( s ):
-   return urllib.quote( s.encode('utf-8'), '' )
+   return urllib.quote( s, '' )
 
 def RandomString( size=6, chars=string.ascii_uppercase + string.digits ):
    return ''.join( random.choice(chars) for x in range(size) )
 
-def GenerateSig( url, nonce, time_stamp, expand_parms, term ):
-   sig = 'GET&' + OAuthEscape( url ) + '&'
+def GenerateSig( parameters ):
+   sig = 'GET&' + OAuthEscape( TITLE_URL ) + '&'
 
-   parameters = ''.join([
-      'expand=' + OAuthEscape(expand_parms),
-      '&max_results=1',
-      '&oauth_consumer_key=' + CONSUMER_KEY,
-      '&oauth_nonce=' + nonce,
-      '&oauth_signature_method=HMAC-SHA1',
-      '&oauth_timestamp=' + time_stamp,
-      '&oauth_version=1.0',
-      '&term=' + OAuthEscape(term) ])
+   param_encode = urllib.urlencode(parameters).replace('+', '%20')
 
-   sig = sig + OAuthEscape(parameters)
+   sig = sig + OAuthEscape(param_encode)
 
    secret =  NET_SECRET + '&'
    hashed = hmac.new(secret, sig, sha1)
@@ -54,31 +49,29 @@ class Entry:
    genre = ''
 
 def GetAutocompleteSearchTitles( search_string ):
-      auto_url = "http://api-public.netflix.com/catalog/titles/autocomplete"
+   auto_url = "http://api-public.netflix.com/catalog/titles/autocomplete"
 
-      auto_parameters = [
-         ('term', search_string),
-         ('oauth_consumer_key', CONSUMER_KEY)]
+   auto_parameters = [
+      ('term', search_string),
+      ('oauth_consumer_key', CONSUMER_KEY)]
 
-      full_auto_url = auto_url + '?' + urllib.urlencode(auto_parameters)
+   full_auto_url = AUTO_URL + '?' + urllib.urlencode(auto_parameters)
 
-      # Read autocomplete url and convert to XML
-      auto_data = urlfetch.fetch(full_auto_url, deadline=10).content
-      auto_xml = ET.fromstring(auto_data)
+   # Read autocomplete url and convert to XML
+   auto_data = urlfetch.fetch(full_auto_url, deadline=10).content
+   auto_xml = ET.fromstring(auto_data)
 
-      # auto_names holds the titles returned by autocomplete search
-      auto_names = []
+   # auto_names holds the titles returned by autocomplete search
+   auto_names = []
 
-      # Grab all titles from autocomplete search
-      for i in auto_xml.findall('.//title'):
-         n = i.attrib.get('short')
-         auto_names.append(n)
+   # Grab all titles from autocomplete search
+   for i in auto_xml.findall('.//title'):
+      n = i.attrib.get('short')
+      auto_names.append(n)
 
-      return auto_names
+   return auto_names
 
 def GetCatalogTitles( auto_names ):
-   url = 'http://api-public.netflix.com/catalog/titles'
-
    expand_parms = 'synopsis,cast,formats,@episodes,@seasons'
    nonce = RandomString()
    time_stamp = str( int(time.time()) )
@@ -94,20 +87,21 @@ def GetCatalogTitles( auto_names ):
 
       term = auto_names[i]
 
-      sign = GenerateSig( url, nonce, time_stamp, expand_parms, term )
-
       parameters = [
          ('expand', expand_parms),
          ('max_results', '1'),
          ('oauth_consumer_key', CONSUMER_KEY),
          ('oauth_nonce', nonce),
-         ('oauth_signature', sign),
          ('oauth_signature_method', 'HMAC-SHA1'),
          ('oauth_timestamp', time_stamp),
          ('oauth_version', '1.0'),
          ('term', term)]
 
-      full_url = url + '?' + urllib.urlencode(parameters)
+      sign = GenerateSig( parameters )
+
+      parameters.append(('oauth_signature', sign))
+
+      full_url = TITLE_URL + '?' + urllib.urlencode(parameters)
 
       # Read catalog url and convert to XML
       fetch = urlfetch.fetch(full_url, deadline=30)
@@ -120,7 +114,6 @@ def GetCatalogTitles( auto_names ):
 
       xml = ET.fromstring(data)
 
-      # Logging DEBUG
       # logging.info(data)
 
       # Pull out title attributes of entry
