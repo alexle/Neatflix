@@ -74,7 +74,7 @@ def GetAutocompleteSearchTitles( search_string ):
 def GetCatalogTitles( auto_names ):
    expand_parms = 'synopsis,cast,formats,@episodes,@seasons'
    nonce = RandomString()
-   time_stamp = str( int(time.time()) )
+   time_stamp = time.time()
 
    # Entries is a list of entry objects
    Entries = []
