@@ -23,19 +23,13 @@ def OAuthEscape( s ):
 def RandomString( size=6, chars=string.ascii_uppercase + string.digits ):
    return ''.join( random.choice(chars) for x in range(size) )
 
-def GenerateSig( parameters ):
-   sig = 'GET&' + OAuthEscape( TITLE_URL ) + '&'
-
-   param_encode = urllib.urlencode(parameters).replace('+', '%20')
-
-   sig = sig + OAuthEscape(param_encode)
-
+def GenerateSig( base_string ):
    secret =  NET_SECRET + '&'
-   hashed = hmac.new(secret, sig, sha1)
+   hashed = hmac.new(secret, base_string , sha1)
 
-   safe_sig = binascii.b2a_base64(hashed.digest())[:-1]
+   signed_sig = binascii.b2a_base64(hashed.digest())[:-1]
 
-   return safe_sig
+   return signed_sig
 
 class Entry:
    title = ''
@@ -97,7 +91,12 @@ def GetCatalogTitles( auto_names ):
          ('oauth_version', '1.0'),
          ('term', term)]
 
-      sign = GenerateSig( parameters )
+      # Put together base string
+      param_encode = urllib.urlencode(parameters).replace('+', '%20')
+
+      base_string = 'GET&' + OAuthEscape( TITLE_URL ) + '&' + OAuthEscape(param_encode)
+
+      sign = GenerateSig( base_string )
 
       parameters.append(('oauth_signature', sign))
 
