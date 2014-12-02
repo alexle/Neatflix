@@ -75,13 +75,15 @@ body {
 a:link, a:visited, a:hover {
    color: black;
    cursor: hand;
+}
+
+a.logo_link:link, a.logo_link:visited, a.logo_link:hover {
+   cursor: hand;
    text-decoration: none;
 }
 
 a.about_link:link, a.about_link:visited, a.about_link:hover {
-   color: #777;
    cursor: hand;
-   text-decoration: none;
 }
 
 .clear {

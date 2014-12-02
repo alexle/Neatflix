@@ -22,14 +22,16 @@
    <body>
    <div id="wrapper">
       <div id="nav_box">
-         <div id="logo">
-            <a href="/">Neatflix</a><span id="logo_sub">a netflix api demo</span>
+         <div id="logo" >
+            <a class="logo_link" href="/">Neatflix</a><span id="logo_sub">a netflix api demo</span>
          </div>
 
+      <!--
          <form id="search_form" method="get">
          <input type="text" id="search_box" name="search_input" value="Search for a film" onfocus="this.value=''">
          <input type="submit" id="search_button" value="" onclick="$('#result_box').html(''); $('#spinner').show();">
          </form>
+      -->
       </div>
 
       <div class="clear"></div>
@@ -37,6 +39,15 @@
 
       <div id="spinner"><img src="/images/ajax-loader.gif"></div>
       
+      I'm sad to annouce the end of Neatflix. It relied on Netflix's public API, which was <a href="http://techcrunch.com/2014/06/13/netflix-api-shutdown/">retired on November 14th, 2014</a>.
+      <br><br>
+      I had more plans for Neatflix, but once I realized that the Netflix was going to retire their API, it no longer made sense to to put more effort into the project.
+      <br><br>
+      Thanks to everyone who gave feedback on Neatflix. I hope you enjoyed it!
+
+      <div class="clear"></div>
+      <br><br>
+
       <div id="result_box">
          {% if Entries|length %}
             Showing {{ Entries|length }} result(s) for "{{ search_string }}":
